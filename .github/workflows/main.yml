@@ -1,0 +1,39 @@
+name: Process CSV with Python
+
+on:
+  push:
+    branches: [ "main" ] # Jab bhi main branch par code push ho
+
+jobs:
+  process-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Step 1: Code download karein (CSV aur Python file dono aayenge)
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Python setup karein
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    # Step 3: Dependencies install karein (Pandas waghera)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Agar requirements.txt nahi hai, toh direct likh sakte hain:
+        # pip install pandas
+
+    # Step 4: Python script run karein
+    - name: Run processing script
+      run: python scripts.py
+
+    # Step 5 (Optional): Processed file ko download karne ke liye upload karein
+    - name: Upload result
+      uses: actions/upload-artifact@v4
+      with:
+        name: processed-data
+        path: result.csv
